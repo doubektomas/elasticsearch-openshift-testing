@@ -53,6 +53,8 @@ For example, to update/change `admin` password:
 ### Parameters
 
 List of parameters:
+
+```bash
   - name: NAMESPACE
     displayName: Your project's namespace
     required: true 
@@ -95,7 +97,7 @@ List of parameters:
   - name: KIBANA_URL
     displayName: Kibana image to use
     required: true 
-
+```
 
 For more info:
 
