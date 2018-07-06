@@ -54,7 +54,7 @@ For example, to update/change `admin` password:
 
 List of parameters:
 
-```bash
+```console
   - name: NAMESPACE
     displayName: Your project's namespace
     required: true 
