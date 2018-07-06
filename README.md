@@ -26,8 +26,8 @@ If your default storageClassName name is NOT `standard`, then you'll need to set
 # Create a new project
 oc new-project elasticsearch
 
-# Start deployments. Change the variable to your need
-oc process -f elasticsearch-search-guard-single-node-version.yaml \
+# Start deployments. Make sure you change the variables/parametes to your need
+oc process -f https://raw.githubusercontent.com/jefferyb/elasticsearch-openshift/master/search-guard-version/elasticsearch-search-guard-single-node-version.yaml \
 -p NAMESPACE="$(oc project -q)" \
 -p KIBANA_URL="kibana.example.com" \
 -p ELASTICSEARCH_URL="es.example.com" \
@@ -75,10 +75,6 @@ List of parameters:
     description: use 'echo -n "kibanaserver:kibanaserver" | base64' to create the string. ref- https://stackoverflow.com/a/43948832
     value: a2liYW5hc2VydmVyOmtpYmFuYXNlcnZlcg==
     required: true 
-  - name: ELASTICSEARCH_IMAGE
-    displayName: Elasticsearch image to use
-    value: docker.io/jefferyb/elasticsearch-oss:6.3.0-searchguard-22.3
-    required: true 
   - name: STORAGECLASSNAME
     displayName: Your storage class name (storageClassName) used in your cluster
     value: standard
@@ -87,9 +83,13 @@ List of parameters:
     displayName: Volume space available for data, e.g. 512Mi, 2Gi.
     value: 10Gi
     required: true 
+  - name: ELASTICSEARCH_IMAGE
+    displayName: Elasticsearch image to use
+    value: docker.io/jefferyb/openshift-elastic:elasticsearch-oss-6.3.0-searchguard-22.3
+    required: true 
   - name: KIBANA_IMAGE
     displayName: Kibana image to use
-    value: docker.io/jefferyb/kibana-oss:6.3.0-searchguard-13
+    value: docker.io/jefferyb/openshift-elastic:kibana-oss-6.3.0-searchguard-13
     required: true 
   - name: ELASTICSEARCH_URL
     displayName: Kibana image to use

@@ -391,19 +391,15 @@ objects:
             name: storage
           - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
             name: elasticsearch-config
-            readOnly: true
             subPath: elasticsearch.yml
           - mountPath: /usr/share/elasticsearch/config/sgconfig/sg_internal_users.yml
             name: search-guard-configs
-            readOnly: true
             subPath: sg_internal_users.yml
           - mountPath: /usr/share/elasticsearch/config/sgconfig/sg_roles.yml
             name: search-guard-configs
-            readOnly: true
             subPath: sg_roles.yml
           - mountPath: /usr/share/elasticsearch/config/sgconfig/sg_roles_mapping.yml
             name: search-guard-configs
-            readOnly: true
             subPath: sg_roles_mapping.yml
         restartPolicy: Always
         volumes:
@@ -487,7 +483,6 @@ objects:
           volumeMounts:
           - mountPath: /usr/share/kibana/config/kibana.yml
             name: kibana-config
-            readOnly: true
             subPath: kibana.yml
         restartPolicy: Always
         volumes:
@@ -599,22 +594,22 @@ parameters:
     description: use 'echo -n "kibanaserver:kibanaserver" | base64' to create the string. ref- https://stackoverflow.com/a/43948832
     value: a2liYW5hc2VydmVyOmtpYmFuYXNlcnZlcg==
     required: true 
-  - name: ELASTICSEARCH_IMAGE
-    displayName: Elasticsearch image to use
-    value: docker.io/jefferyb/elasticsearch-oss:6.3.0-searchguard-22.3
-    required: true 
   - name: STORAGECLASSNAME
     displayName: Your storage class name (storageClassName) used in your cluster
     value: standard
-    required: true 
+    required: true
   - name: ELASTICSEARCH_VOLUME_CAPACITY
     displayName: Volume space available for data, e.g. 512Mi, 2Gi.
     value: 10Gi
-    required: true 
+    required: true
+  - name: ELASTICSEARCH_IMAGE
+    displayName: Elasticsearch image to use
+    value: docker.io/jefferyb/openshift-elastic:elasticsearch-oss-6.3.0-searchguard-22.3
+    required: true
   - name: KIBANA_IMAGE
     displayName: Kibana image to use
-    value: docker.io/jefferyb/kibana-oss:6.3.0-searchguard-13
-    required: true 
+    value: docker.io/jefferyb/openshift-elastic:kibana-oss-6.3.0-searchguard-13
+    required: true
   - name: ELASTICSEARCH_URL
     displayName: Kibana image to use
     required: true 
