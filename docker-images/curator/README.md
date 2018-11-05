@@ -9,5 +9,5 @@ Lean Elasticsearch Curator container image, based on Alpine Linux and Python 3.
 ## Usage
 
 ```
-docker pull jefferyb/openshift-elastic:curator-5.5.4
+docker pull jefferyb/elastic-curator
 ```
