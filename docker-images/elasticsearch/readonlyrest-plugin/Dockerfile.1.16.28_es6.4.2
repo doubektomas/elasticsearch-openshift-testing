@@ -1,0 +1,15 @@
+FROM docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.2
+
+ENV oss_version="6.4.2"
+ENV readonlyrest_version='1.16.28'
+
+USER elasticsearch
+
+COPY zip_files/readonlyrest-${readonlyrest_version}_es${oss_version}.zip /usr/share/elasticsearch/
+
+# Search ReadonlyREST plugin
+# https://github.com/beshu-tech/readonlyrest-docs/blob/master/elasticsearch.md#installing-the-plugin
+RUN elasticsearch-plugin install --batch file:///usr/share/elasticsearch/readonlyrest-${readonlyrest_version}_es${oss_version}.zip \
+    && rm -f readonlyrest-${readonlyrest_version}_es${oss_version}.zip
+
+USER root
