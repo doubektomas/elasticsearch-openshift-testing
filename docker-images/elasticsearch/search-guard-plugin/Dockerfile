@@ -1,5 +1,5 @@
 # https://github.com/elastic/elasticsearch-docker
-FROM docker.elastic.co/elasticsearch/elasticsearch-oss:6.5.4
+FROM docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.0
 
 USER elasticsearch
 
@@ -8,7 +8,7 @@ COPY bin/ bin/
 
 # Search Guard plugin
 # https://github.com/floragunncom/search-guard/wiki
-RUN elasticsearch-plugin install --batch com.floragunn:search-guard-6:6.5.4-24.0 \
+RUN elasticsearch-plugin install --batch com.floragunn:search-guard-6:6.6.0-24.1 \
 	&& chmod +x plugins/search-guard-6/tools/*.sh
 
 # Generate certs for search-guard
