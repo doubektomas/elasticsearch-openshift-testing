@@ -401,6 +401,9 @@ objects:
           - mountPath: /usr/share/elasticsearch/config/sgconfig/sg_roles_mapping.yml
             name: search-guard-configs
             subPath: sg_roles_mapping.yml
+          securityContext:
+            capabilities:
+              add: ["SYS_CHROOT"]
         restartPolicy: Always
         volumes:
         - configMap:
@@ -484,6 +487,9 @@ objects:
           - mountPath: /usr/share/kibana/config/kibana.yml
             name: kibana-config
             subPath: kibana.yml
+          securityContext:
+            capabilities:
+              add: ["SYS_CHROOT"]
         restartPolicy: Always
         volumes:
         - configMap:
