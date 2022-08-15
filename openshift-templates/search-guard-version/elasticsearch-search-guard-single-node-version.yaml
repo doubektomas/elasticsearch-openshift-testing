@@ -274,7 +274,7 @@ objects:
       ---
       server.name: kibana
       server.host: "0"
-      elasticsearch.url: http://elasticsearch:9200
+      elasticsearch.url: http://elasticsearch:9201
 
       ## Custom configuration
       elasticsearch.username: "${ELASTICSEARCH_USERNAME}"
@@ -365,7 +365,7 @@ objects:
             timeoutSeconds: 5
           name: elasticsearch
           ports:
-          - containerPort: 9200
+          - containerPort: 9201
             name: http
             protocol: TCP
           - containerPort: 9300
@@ -462,7 +462,7 @@ objects:
             timeoutSeconds: 5
           name: kibana
           ports:
-          - containerPort: 5601
+          - containerPort: 5602
             name: http
             protocol: TCP
           readinessProbe:
@@ -502,7 +502,7 @@ objects:
   spec:
     host: ${ELASTICSEARCH_URL}
     port:
-      targetPort: "9200"
+      targetPort: "9201"
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
@@ -523,7 +523,7 @@ objects:
   spec:
     host: ${KIBANA_URL}
     port:
-      targetPort: "5601"
+      targetPort: "5602"
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
@@ -543,10 +543,10 @@ objects:
     name: elasticsearch
   spec:
     ports:
-    - name: "9200"
-      port: 9200
+    - name: "9201"
+      port: 9201
       protocol: TCP
-      targetPort: 9200
+      targetPort: 9201
     - name: "9300"
       port: 9300
       protocol: TCP
@@ -565,10 +565,10 @@ objects:
     name: kibana
   spec:
     ports:
-    - name: "5601"
-      port: 5601
+    - name: "5602"
+      port: 5602
       protocol: TCP
-      targetPort: 5601
+      targetPort: 5602
     selector:
       io.kompose.service: kibana
     type: ClusterIP

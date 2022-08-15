@@ -27,7 +27,7 @@ If your default storageClassName name is NOT `standard`, then you'll need to set
 oc new-project elasticsearch
 
 # Start deployments. Make sure you change the variables/parametes to your need
-oc process -f https://raw.githubusercontent.com/jefferyb/elasticsearch-openshift/master/search-guard-version/elasticsearch-search-guard-single-node-version.yaml \
+oc process -f https://raw.githubusercontent.com/doubektomas/elasticsearch-openshift-testing/master/openshift-templates/search-guard-version/elasticsearch-search-guard-single-node-version.yaml \
 -p NAMESPACE="$(oc project -q)" \
 -p KIBANA_URL="kibana.example.com" \
 -p ELASTICSEARCH_URL="es.example.com" \
