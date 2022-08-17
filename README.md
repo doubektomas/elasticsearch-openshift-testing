@@ -1,3 +1,7 @@
+# TODO:
+ - [] Make ports for elastic and kibana as parameters
+ - [] Clean up the yaml
+ - [] Test everything
 
 # Elasticsearch Cluster on Openshift
 
@@ -38,19 +42,6 @@ List of parameters:
   - name: CLUSTER_NAME
     displayName: Cluster name (cluster.name)
     value: docker-cluster
-    required: true 
-  - name: ELASTICSEARCH_USERNAME
-    displayName: Internal Kibana server user, for configuring elasticsearch.username in kibana.yml
-    value: kibanaserver
-    required: true 
-  - name: ELASTICSEARCH_PASSWORD
-    displayName: Internal Kibana server user, for configuring elasticsearch.password in kibana.yml
-    value: kibanaserver
-    required: true 
-  - name: LIVENESSPROBE_CREDENTIALS
-    displayName: username & password for liveness probes (default => kibanaserver:kibanaserver)
-    description: use 'echo -n "kibanaserver:kibanaserver" | base64' to create the string. ref- https://stackoverflow.com/a/43948832
-    value: a2liYW5hc2VydmVyOmtpYmFuYXNlcnZlcg==
     required: true 
   - name: STORAGECLASSNAME
     displayName: Your storage class name (storageClassName) used in your cluster
