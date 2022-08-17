@@ -4,7 +4,7 @@
 #
 server.name: kibana
 server.host: "0"
-elasticsearch.url: http://elasticsearch:9201
+elasticsearch.url: http://elasticsearch:9202
 
 ## Custom configuration
 #

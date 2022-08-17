@@ -239,26 +239,10 @@ objects:
   data:
     elasticsearch.yml: |
       ---
-      # https://github.com/deviantony/docker-elk/blob/searchguard/elasticsearch/config/elasticsearch.yml
       cluster.name: "${CLUSTER_NAME}"
       network.host: 0.0.0.0
       discovery.zen.minimum_master_nodes: 1
       discovery.type: single-node
-      ## Search Guard
-      #
-      searchguard.enterprise_modules_enabled: false
-
-      searchguard.ssl.transport.pemcert_filepath: sgconfig/esnode.pem
-      searchguard.ssl.transport.pemkey_filepath: sgconfig/esnode-key.pem
-      searchguard.ssl.transport.pemtrustedcas_filepath: sgconfig/root-ca.pem
-      searchguard.ssl.transport.enforce_hostname_verification: false
-
-      searchguard.authcz.admin_dn:
-        - "CN=kirk,OU=client,O=client,l=test,C=de"
-
-      # disable Search Guard without removing it (Please use this feature carefully.)
-      # ref: https://docs.search-guard.com/latest/disabling-removing-search-guard
-      # searchguard.disabled: true
 
 - apiVersion: v1
   kind: ConfigMap
@@ -274,18 +258,11 @@ objects:
       ---
       server.name: kibana
       server.host: "0"
-      elasticsearch.url: http://elasticsearch:9201
+      elasticsearch.url: http://elasticsearch:9202
 
       ## Custom configuration
       elasticsearch.username: "${ELASTICSEARCH_USERNAME}"
       elasticsearch.password: "${ELASTICSEARCH_PASSWORD}"
-
-      ### Preventing users from logging in
-      # This is useful if you don’t want system users like the Kibana server user or the logstash user to log in.
-      # https://docs.search-guard.com/latest/kibana-authentication
-      # searchguard.basicauth.forbidden_usernames: ["kibanaserver", "logstash", "elastic", "readall"]
-
-      searchguard.cookie.password: "123567818187654rwrwfsfshdhdhtegdhfzftdhncn"
 
 - apiVersion: apps/v1
   kind: StatefulSet
@@ -349,7 +326,7 @@ objects:
                 command:
                 - sh
                 - -c
-                - sleep 20 && /usr/share/elasticsearch/bin/init_sg.sh
+                - sleep 20 && /usr/share/elasticsearch/bin/elasticsearch
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -365,7 +342,7 @@ objects:
             timeoutSeconds: 5
           name: elasticsearch
           ports:
-          - containerPort: 9201
+          - containerPort: 9202
             name: http
             protocol: TCP
           - containerPort: 9300
@@ -508,7 +485,7 @@ objects:
   spec:
     host: ${ELASTICSEARCH_URL}
     port:
-      targetPort: "9201"
+      targetPort: "9202"
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
@@ -549,10 +526,10 @@ objects:
     name: elasticsearch
   spec:
     ports:
-    - name: "9201"
-      port: 9201
+    - name: "9202"
+      port: 9202
       protocol: TCP
-      targetPort: 9201
+      targetPort: 9202
     - name: "9300"
       port: 9300
       protocol: TCP
