@@ -328,7 +328,7 @@ objects:
                 command:
                 - sh
                 - -c
-                - sleep 20 && /usr/share/elasticsearch/bin/elasticsearch
+                - sleep 20 && /usr/share/elasticsearch/bin/elasticsearch.sh
           livenessProbe:
             failureThreshold: 3
             httpGet:
