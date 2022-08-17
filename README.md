@@ -1,7 +1,7 @@
 # TODO:
- - [] Make ports for elastic and kibana as parameters
- - [] Clean up the yaml
- - [] Test everything
+ - [ ] Make ports for elastic and kibana as parameters
+ - [ ] Clean up the yaml
+ - [ ] Test everything
 
 # Elasticsearch Cluster on Openshift
 
