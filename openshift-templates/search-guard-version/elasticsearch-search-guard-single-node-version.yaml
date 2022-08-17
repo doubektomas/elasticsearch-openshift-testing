@@ -318,7 +318,8 @@ objects:
             value: -Xms1024m -Xmx1024m
           - name: bootstrap.memory_lock
             value: "false"
-          image: ${ELASTICSEARCH_IMAGE}
+          #image: ${ELASTICSEARCH_IMAGE}
+          image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
           imagePullPolicy: IfNotPresent
           lifecycle:
             postStart:
@@ -425,7 +426,8 @@ objects:
           io.kompose.service: kibana
       spec:
         containers:
-        - image: ${KIBANA_IMAGE}
+        #- image: ${KIBANA_IMAGE}
+        - image: docker.elastic.co/kibana/kibana-oss:7.10.2
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
