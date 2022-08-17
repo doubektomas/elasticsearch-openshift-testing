@@ -258,7 +258,8 @@ objects:
       ---
       server.name: kibana
       server.host: "0"
-      elasticsearch.url: http://elasticsearch:9202
+      #elasticsearch.url: http://elasticsearch:9202
+      elasticsearch.hosts: ["http://localhost:9202/"]
 
       ## Custom configuration
       elasticsearch.username: "${ELASTICSEARCH_USERNAME}"
