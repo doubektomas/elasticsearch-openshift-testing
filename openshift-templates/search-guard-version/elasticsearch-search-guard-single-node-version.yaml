@@ -347,7 +347,7 @@ objects:
           - containerPort: 9202
             name: http
             protocol: TCP
-          - containerPort: 9300
+          - containerPort: 9301
             name: transport
             protocol: TCP
           readinessProbe:
@@ -533,10 +533,10 @@ objects:
       port: 9202
       protocol: TCP
       targetPort: 9202
-    - name: "9300"
-      port: 9300
+    - name: "9301"
+      port: 9301
       protocol: TCP
-      targetPort: 9300
+      targetPort: 9301
     selector:
       io.kompose.service: elasticsearch
     type: ClusterIP
