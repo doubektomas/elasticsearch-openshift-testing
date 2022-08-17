@@ -322,7 +322,6 @@ objects:
             value: -Xms1024m -Xmx1024m
           - name: bootstrap.memory_lock
             value: "false"
-          #image: ${ELASTICSEARCH_IMAGE}
           image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
           imagePullPolicy: IfNotPresent
           # lifecycle:
@@ -430,7 +429,6 @@ objects:
           io.kompose.service: kibana
       spec:
         containers:
-        #- image: ${KIBANA_IMAGE}
         - image: docker.elastic.co/kibana/kibana-oss:7.10.2
           imagePullPolicy: IfNotPresent
           livenessProbe:
@@ -591,17 +589,9 @@ parameters:
     displayName: Volume space available for data, e.g. 512Mi, 2Gi.
     value: 10Gi
     required: true
-  - name: ELASTICSEARCH_IMAGE
-    displayName: Elasticsearch image to use
-    value: docker.io/jefferyb/openshift-elastic:elasticsearch-oss-6.3.0-searchguard-22.3
-    required: true
-  - name: KIBANA_IMAGE
-    displayName: Kibana image to use
-    value: docker.io/jefferyb/openshift-elastic:kibana-oss-6.3.0-searchguard-13
-    required: true
   - name: ELASTICSEARCH_URL
-    displayName: Kibana image to use
+    displayName: ElasticSearch url
     required: true 
   - name: KIBANA_URL
-    displayName: Kibana image to use
+    displayName: Kibana url
     required: true 

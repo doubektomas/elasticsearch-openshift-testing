@@ -1,17 +1,6 @@
 
 # Elasticsearch Cluster on Openshift
 
-Run the latest version of the Elastic stack on Openshift with [Search Guard support](https://github.com/floragunncom/search-guard).
-
-Based on the official Docker images from Elastic:
-
-* [elasticsearch](https://github.com/elastic/elasticsearch-docker)
-* [logstash](https://github.com/elastic/logstash-docker)
-* [kibana](https://github.com/elastic/kibana-docker)
-
-**Check the [Demo users and roles](http://docs.search-guard.com/latest/demo-users-roles) documentation page for a list
-and description of the built-in Search Guard users.**
-
 PS: This assumes that your cluster is configured to dynamically provision PersistentVolumes.
 If your cluster is not configured to do so, you will have to manually provision
 10 GiB volumes prior to starting.
@@ -24,7 +13,9 @@ If your default storageClassName name is NOT `standard`, then you'll need to set
 
 ```bash
 # Create a new project
-oc new-project elasticsearch
+oc new-project elasticsearch-testing
+
+oc adm policy add-scc-to-user privileged -z default -n elasticsearch-testing
 
 # Start deployments. Make sure you change the variables/parametes to your need
 oc process -f https://raw.githubusercontent.com/doubektomas/elasticsearch-openshift-testing/master/openshift-templates/search-guard-version/elasticsearch-search-guard-single-node-version.yaml \
@@ -33,20 +24,6 @@ oc process -f https://raw.githubusercontent.com/doubektomas/elasticsearch-opensh
 -p ELASTICSEARCH_URL="es.example.com" \
 -p STORAGECLASSNAME="managed-nfs-storage" \
 | oc apply -f -
-
-```
-
-Once you have your deployment, you can use files in `config-files` folder to
-update your config file, like updating users and roles.
-
-For example, to update/change `admin` password:
-
-```bash
-# edit 'config-files/elasticsearch-search-guard-users.yaml' with the updated
-# password
-
-# run update-sg-user.sh to update elasticsearch
-./bin/update-sg-user.sh
 
 ```
 
@@ -83,14 +60,6 @@ List of parameters:
     displayName: Volume space available for data, e.g. 512Mi, 2Gi.
     value: 10Gi
     required: true 
-  - name: ELASTICSEARCH_IMAGE
-    displayName: Elasticsearch image to use
-    value: docker.io/jefferyb/openshift-elastic:elasticsearch-oss-6.3.0-searchguard-22.3
-    required: true 
-  - name: KIBANA_IMAGE
-    displayName: Kibana image to use
-    value: docker.io/jefferyb/openshift-elastic:kibana-oss-6.3.0-searchguard-13
-    required: true 
   - name: ELASTICSEARCH_URL
     displayName: Kibana image to use
     required: true 
@@ -98,9 +67,4 @@ List of parameters:
     displayName: Kibana image to use
     required: true 
 ```
-
-For more info:
-
-* https://github.com/deviantony/docker-elk/tree/searchguard
-* https://github.com/linkbynet/openshift-stateful-elasticsearch-cluster
 
