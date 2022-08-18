@@ -36,8 +36,8 @@ objects:
       ---
       cluster.name: "${CLUSTER_NAME}"
       network.host: 0.0.0.0
-      http.port: 9202
-      transport.port: 9301
+      http.port: ${ES_HTTP_PORT}
+      transport.port: ${ES_TRANSPORT_PORT}
       discovery.type: single-node
 
 - apiVersion: v1
@@ -54,8 +54,8 @@ objects:
       ---
       server.name: kibana
       server.host: "0"
-      server.port: 5602
-      elasticsearch.hosts: ["http://elasticsearch:9202"]
+      server.port: ${KIBANA_PORT}
+      elasticsearch.hosts: ["http://elasticsearch:${ES_HTTP_PORT}"]
 
 - apiVersion: apps/v1
   kind: StatefulSet
@@ -103,10 +103,10 @@ objects:
             timeoutSeconds: 5
           name: elasticsearch
           ports:
-          - containerPort: 9202
+          - containerPort: ${ES_HTTP_PORT}
             name: http
             protocol: TCP
-          - containerPort: 9301
+          - containerPort: ${ES_TRANSPORT_PORT}
             name: transport
             protocol: TCP
           readinessProbe:
@@ -191,7 +191,7 @@ objects:
             timeoutSeconds: 5
           name: kibana
           ports:
-          - containerPort: 5602
+          - containerPort: ${KIBANA_PORT}
             name: http
             protocol: TCP
           readinessProbe:
@@ -234,7 +234,7 @@ objects:
   spec:
     host: ${ELASTICSEARCH_URL}
     port:
-      targetPort: "9202"
+      targetPort: "${ES_HTTP_PORT}"
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
@@ -255,7 +255,7 @@ objects:
   spec:
     host: ${KIBANA_URL}
     port:
-      targetPort: "5602"
+      targetPort: "${KIBANA_PORT}"
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
@@ -275,14 +275,14 @@ objects:
     name: elasticsearch
   spec:
     ports:
-    - name: "9202"
-      port: 9202
+    - name: "${ES_HTTP_PORT}"
+      port: ${ES_HTTP_PORT}
       protocol: TCP
-      targetPort: 9202
-    - name: "9301"
-      port: 9301
+      targetPort: ${ES_HTTP_PORT}
+    - name: "${ES_TRANSPORT_PORT}"
+      port: ${ES_TRANSPORT_PORT}
       protocol: TCP
-      targetPort: 9301
+      targetPort: ${ES_TRANSPORT_PORT}
     selector:
       io.kompose.service: elasticsearch
     type: ClusterIP
@@ -297,10 +297,10 @@ objects:
     name: kibana
   spec:
     ports:
-    - name: "5602"
-      port: 5602
+    - name: "${KIBANA_PORT}"
+      port: ${KIBANA_PORT}
       protocol: TCP
-      targetPort: 5602
+      targetPort: ${KIBANA_PORT}
     selector:
       io.kompose.service: kibana
     type: ClusterIP
@@ -327,3 +327,15 @@ parameters:
   - name: KIBANA_URL
     displayName: Kibana url
     required: true 
+  - name: KIBANA_PORT
+    displayName: Kibana port
+    value: 5601
+    required: true
+  - name: ES_HTTP_PORT
+    displayName: Elasticsearch http port
+    value: 9200
+    required: true
+  -name: ES_TRANSPORT_PORT
+    displayName: Elasticsearch transport port
+    value: 9300
+    required: true

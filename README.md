@@ -58,5 +58,17 @@ List of parameters:
   - name: KIBANA_URL
     displayName: Kibana image to use
     required: true 
+  - name: KIBANA_PORT
+    displayName: Kibana port
+    value: 5601
+    required: true
+  - name: ES_HTTP_PORT
+    displayName: Elasticsearch http port
+    value: 9200
+    required: true
+  -name: ES_TRANSPORT_PORT
+    displayName: Elasticsearch transport port
+    value: 9300
+    required: true
 ```
 
