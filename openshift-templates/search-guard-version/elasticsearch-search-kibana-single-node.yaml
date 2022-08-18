@@ -234,7 +234,7 @@ objects:
   spec:
     host: ${ELASTICSEARCH_URL}
     port:
-      targetPort: "${{ES_HTTP_PORT}}"
+      targetPort: "${ES_HTTP_PORT}"
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
@@ -255,7 +255,7 @@ objects:
   spec:
     host: ${KIBANA_URL}
     port:
-      targetPort: "${{KIBANA_PORT}}"
+      targetPort: "${KIBANA_PORT}"
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
@@ -275,11 +275,11 @@ objects:
     name: elasticsearch
   spec:
     ports:
-    - name: "${{ES_HTTP_PORT}}"
+    - name: "${ES_HTTP_PORT}"
       port: ${{ES_HTTP_PORT}}
       protocol: TCP
       targetPort: ${{ES_HTTP_PORT}}
-    - name: "${{ES_TRANSPORT_PORT}}"
+    - name: "${ES_TRANSPORT_PORT}"
       port: ${{ES_TRANSPORT_PORT}}
       protocol: TCP
       targetPort: ${{ES_TRANSPORT_PORT}}
@@ -297,7 +297,7 @@ objects:
     name: kibana
   spec:
     ports:
-    - name: "${{KIBANA_PORT}}"
+    - name: "${KIBANA_PORT}"
       port: ${{KIBANA_PORT}}
       protocol: TCP
       targetPort: ${{KIBANA_PORT}}
