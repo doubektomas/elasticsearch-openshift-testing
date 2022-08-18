@@ -54,20 +54,20 @@ objects:
             privileged: true
         containers:
         - env:
-        - name: cluster.name
-          value: opensearch-cluster
-        - name: node.name
-          value: opensearch-node1
-        - name: bootstrap.memory_lock
-          value: true
-        - name: OPENSEARCH_JAVA_OPTS
-          value: -Xms512m -Xmx512m
-        - name: DISABLE_INSTALL_DEMO_CONFIG
-          value: true
-        - name: DISABLE_SECURITY_PLUGIN
-          value: true
-        - name: discovery.type
-          value: single-node
+          - name: cluster.name
+            value: opensearch-cluster
+          - name: node.name
+            value: opensearch-node1
+          - name: bootstrap.memory_lock
+            value: true
+          - name: OPENSEARCH_JAVA_OPTS
+            value: -Xms512m -Xmx512m
+          - name: DISABLE_INSTALL_DEMO_CONFIG
+            value: true
+          - name: DISABLE_SECURITY_PLUGIN
+            value: true
+          - name: discovery.type
+            value: single-node
           #image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
           image: opensearchproject/opensearch:2.2.0
           imagePullPolicy: IfNotPresent
