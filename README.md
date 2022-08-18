@@ -1,5 +1,6 @@
 # TODO:
  - [ ] Make ports for elastic and kibana as parameters
+ - [ ] Removed env from elasticsearch pod, it is deprecated, and not needed
  - [ ] Clean up the yaml
  - [ ] Test everything
 
