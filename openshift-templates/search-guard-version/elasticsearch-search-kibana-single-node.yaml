@@ -22,41 +22,6 @@ objects:
   users:
   - system:serviceaccount:${NAMESPACE}:default
 
-- kind: ConfigMap
-  apiVersion: v1
-  metadata:
-    annotations:
-      kompose.cmd: kompose --provider openshift convert -f docker-compose.yml --emptyvols
-      kompose.version: 1.1.0 (36652f6)
-    labels:
-      io.kompose.service: elasticsearch
-    name: elasticsearch-config
-  data:
-    elasticsearch.yml: |
-      ---
-      cluster.name: "${CLUSTER_NAME}"
-      network.host: 0.0.0.0
-      http.port: "${ES_HTTP_PORT}"
-      transport.port: "${ES_TRANSPORT_PORT}"
-      discovery.type: single-node
-
-- apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    annotations:
-      kompose.cmd: kompose --provider openshift convert -f docker-compose.yml --emptyvols
-      kompose.version: 1.1.0 (36652f6)
-    labels:
-      io.kompose.service: kibana
-    name: kibana-config
-  data:
-    kibana.yml: |
-      ---
-      server.name: kibana
-      server.host: "0"
-      server.port: "${KIBANA_PORT}"
-      elasticsearch.hosts: ["http://elasticsearch:${ES_HTTP_PORT}"]
-
 - apiVersion: apps/v1
   kind: StatefulSet
   metadata:
@@ -89,13 +54,27 @@ objects:
             privileged: true
         containers:
         - env:
+        - name: cluster.name
+          value: opensearch-cluster
+        - name: node.name
+          value: opensearch-node1
+        - name: bootstrap.memory_lock
+          value: true
+        - name: OPENSEARCH_JAVA_OPTS
+          value: -Xms512m -Xmx512m
+        - name: DISABLE_INSTALL_DEMO_CONFIG
+          value: true
+        - name: DISABLE_SECURITY_PLUGIN
+          value: true
+        - name: discovery.type
+          value: single-node
           #image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
           image: opensearchproject/opensearch:2.2.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
             httpGet:
-              path: /_cluster/health
+              path: /
               port: http
               scheme: HTTP
             initialDelaySeconds: 30
@@ -126,24 +105,12 @@ objects:
               cpu: 500m
               memory: 1Gi
           volumeMounts:
-          - mountPath: /usr/share/elasticsearch/data
+          - mountPath: /usr/share/opensearch/data
             name: storage
-          - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
-            name: elasticsearch-config
-            subPath: elasticsearch.yml
           securityContext:
             capabilities:
               add: ["SYS_CHROOT"]
         restartPolicy: Always
-        volumes:
-        - configMap:
-            defaultMode: 420
-            name: elasticsearch-config
-          name: elasticsearch-config
-        - configMap:
-            defaultMode: 384
-            name: search-guard-configs
-          name: search-guard-configs
     volumeClaimTemplates:
     - metadata:
         name: storage
@@ -156,75 +123,7 @@ objects:
         storageClassName: ${STORAGECLASSNAME}
     triggers:
     - type: ConfigChange
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    annotations:
-      kompose.cmd: kompose --provider openshift convert -f docker-compose.yml --emptyvols
-      kompose.version: 1.1.0 (36652f6)
-    labels:
-      io.kompose.service: kibana
-    name: kibana
-  spec:
-    replicas: 1
-    selector:
-      io.kompose.service: kibana
-    strategy:
-      resources: {}
-      type: Rolling
-    template:
-      metadata:
-        labels:
-          io.kompose.service: kibana
-      spec:
-        containers:
-        - image: docker.elastic.co/kibana/kibana-oss:7.10.2
-          imagePullPolicy: IfNotPresent
-          livenessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /status
-              port: http
-              scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-          name: kibana
-          ports:
-          - containerPort: ${{KIBANA_PORT}}
-            name: http
-            protocol: TCP
-          readinessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 7
-            periodSeconds: 3
-            successThreshold: 1
-            tcpSocket:
-              port: http
-            timeoutSeconds: 1
-          resources:
-            limits:
-              cpu: "1"
-              memory: 256Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-          volumeMounts:
-          - mountPath: /usr/share/kibana/config/kibana.yml
-            name: kibana-config
-            subPath: kibana.yml
-          securityContext:
-            capabilities:
-              add: ["SYS_CHROOT"]
-        restartPolicy: Always
-        volumes:
-        - configMap:
-            defaultMode: 420
-            name: kibana-config
-          name: kibana-config
-    triggers:
-    - type: ConfigChange
+
 - apiVersion: v1
   kind: Route
   metadata:
@@ -242,27 +141,6 @@ objects:
     to:
       kind: Service
       name: elasticsearch
-      weight: 100
-    wildcardPolicy: None
-- apiVersion: v1
-  kind: Route
-  metadata:
-    annotations:
-      kompose.cmd: kompose --provider openshift convert -f docker-compose.yml --emptyvols
-      kompose.version: 1.1.0 (36652f6)
-    labels:
-      io.kompose.service: kibana
-    name: kibana
-  spec:
-    host: ${KIBANA_URL}
-    port:
-      targetPort: "${KIBANA_PORT}"
-    tls:
-      insecureEdgeTerminationPolicy: Redirect
-      termination: edge
-    to:
-      kind: Service
-      name: kibana
       weight: 100
     wildcardPolicy: None
 - apiVersion: v1
@@ -287,24 +165,6 @@ objects:
     selector:
       io.kompose.service: elasticsearch
     type: ClusterIP
-- apiVersion: v1
-  kind: Service
-  metadata:
-    annotations:
-      kompose.cmd: kompose --provider openshift convert -f docker-compose.yml --emptyvols
-      kompose.version: 1.1.0 (36652f6)
-    labels:
-      io.kompose.service: kibana
-    name: kibana
-  spec:
-    ports:
-    - name: "${KIBANA_PORT}"
-      port: ${{KIBANA_PORT}}
-      protocol: TCP
-      targetPort: ${{KIBANA_PORT}}
-    selector:
-      io.kompose.service: kibana
-    type: ClusterIP
 
 parameters:
   - name: NAMESPACE
@@ -325,18 +185,11 @@ parameters:
   - name: ELASTICSEARCH_URL
     displayName: ElasticSearch url
     required: true 
-  - name: KIBANA_URL
-    displayName: Kibana url
-    required: true 
-  - name: KIBANA_PORT
-    displayName: Kibana port
-    value: "5601"
-    required: true
   - name: ES_HTTP_PORT
     displayName: Elasticsearch http port
     value: "9200"
     required: true
   - name: ES_TRANSPORT_PORT
     displayName: Elasticsearch transport port
-    value: "9300"
+    value: "9600"
     required: true
