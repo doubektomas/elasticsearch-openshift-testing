@@ -36,8 +36,8 @@ objects:
       ---
       cluster.name: "${CLUSTER_NAME}"
       network.host: 0.0.0.0
-      http.port: "${{ES_HTTP_PORT}}"
-      transport.port: "${{ES_TRANSPORT_PORT}}"
+      http.port: "${ES_HTTP_PORT}"
+      transport.port: "${ES_TRANSPORT_PORT}"
       discovery.type: single-node
 
 - apiVersion: v1
@@ -54,8 +54,8 @@ objects:
       ---
       server.name: kibana
       server.host: "0"
-      server.port: "${{KIBANA_PORT}}"
-      elasticsearch.hosts: ["http://elasticsearch:${{ES_HTTP_PORT}}"]
+      server.port: "${KIBANA_PORT}"
+      elasticsearch.hosts: ["http://elasticsearch:${ES_HTTP_PORT}"]
 
 - apiVersion: apps/v1
   kind: StatefulSet
