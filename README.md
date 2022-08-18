@@ -1,5 +1,5 @@
 # TODO:
- - [ ] Make ports for elastic and kibana as parameters
+ - [x] Make ports for elastic and kibana as parameters
  - [x] Remove env from elasticsearch pod, it is deprecated, and not needed
  - [ ] Clean up the yaml
  - [ ] Test everything
@@ -60,15 +60,15 @@ List of parameters:
     required: true 
   - name: KIBANA_PORT
     displayName: Kibana port
-    value: 5601
+    value: "5601"
     required: true
   - name: ES_HTTP_PORT
     displayName: Elasticsearch http port
-    value: 9200
+    value: "9200"
     required: true
   - name: ES_TRANSPORT_PORT
     displayName: Elasticsearch transport port
-    value: 9300
+    value: "9300"
     required: true
 ```
 
