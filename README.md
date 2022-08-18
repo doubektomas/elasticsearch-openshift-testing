@@ -66,7 +66,7 @@ List of parameters:
     displayName: Elasticsearch http port
     value: 9200
     required: true
-  -name: ES_TRANSPORT_PORT
+  - name: ES_TRANSPORT_PORT
     displayName: Elasticsearch transport port
     value: 9300
     required: true
