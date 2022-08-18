@@ -18,12 +18,12 @@ If your default storageClassName name is NOT `standard`, then you'll need to set
 
 ```bash
 # Create a new project
-oc new-project elasticsearch-testing
+oc new-project opensearch-testing
 
-oc adm policy add-scc-to-user privileged -z default -n elasticsearch-testing
+oc adm policy add-scc-to-user privileged -z default -n opensearch-testing
 
 # Start deployments. Make sure you change the variables/parametes to your need
-oc process -f https://raw.githubusercontent.com/doubektomas/elasticsearch-openshift-testing/master/openshift-templates/search-guard-version/elasticsearch-search-kibana-single-node.yaml \
+oc process -f https://raw.githubusercontent.com/doubektomas/elasticsearch-openshift-testing/opensearch-test/openshift-templates/search-guard-version/elasticsearch-search-kibana-single-node.yaml \
 -p NAMESPACE="$(oc project -q)" \
 -p KIBANA_URL="kibana.example.com" \
 -p ELASTICSEARCH_URL="es.example.com" \

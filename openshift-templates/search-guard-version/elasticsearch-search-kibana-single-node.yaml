@@ -59,13 +59,13 @@ objects:
           - name: node.name
             value: opensearch-node1
           - name: bootstrap.memory_lock
-            value: true
+            value: "true"
           - name: OPENSEARCH_JAVA_OPTS
             value: -Xms512m -Xmx512m
           - name: DISABLE_INSTALL_DEMO_CONFIG
-            value: true
+            value: "true"
           - name: DISABLE_SECURITY_PLUGIN
-            value: true
+            value: "true"
           - name: discovery.type
             value: single-node
           #image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
@@ -149,42 +149,42 @@ objects:
         - env:
           - name: OPENSEARCH_HOSTS
             value: "https://opensearch-node1:${ES_HTTP_PORT}"
-        - image: opensearchproject/opensearch-dashboards:2.2.0
-          imagePullPolicy: IfNotPresent
-          livenessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /
-              port: http
-              scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-          name: kibana
-          ports:
-          - containerPort: ${{KIBANA_PORT}}
-            name: http
-            protocol: TCP
-          readinessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 7
-            periodSeconds: 3
-            successThreshold: 1
-            tcpSocket:
-              port: http
-            timeoutSeconds: 1
-          resources:
-            limits:
-              cpu: "1"
-              memory: 256Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-          securityContext:
-            capabilities:
-              add: ["SYS_CHROOT"]
-        restartPolicy: Always
+          image: opensearchproject/opensearch-dashboards:2.2.0
+            imagePullPolicy: IfNotPresent
+            livenessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /
+                port: http
+                scheme: HTTP
+              initialDelaySeconds: 30
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 5
+            name: kibana
+            ports:
+            - containerPort: ${{KIBANA_PORT}}
+              name: http
+              protocol: TCP
+            readinessProbe:
+              failureThreshold: 3
+              initialDelaySeconds: 7
+              periodSeconds: 3
+              successThreshold: 1
+              tcpSocket:
+                port: http
+              timeoutSeconds: 1
+            resources:
+              limits:
+                cpu: "1"
+                memory: 256Mi
+              requests:
+                cpu: 100m
+                memory: 128Mi
+            securityContext:
+              capabilities:
+                add: ["SYS_CHROOT"]
+          restartPolicy: Always
     triggers:
     - type: ConfigChange
 
