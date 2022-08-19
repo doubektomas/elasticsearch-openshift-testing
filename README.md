@@ -4,7 +4,7 @@
  - [ ] Clean up the yaml
  - [ ] Test everything
 
-# Elasticsearch Cluster on Openshift
+# OpenSearch Cluster on Openshift
 
 PS: This assumes that your cluster is configured to dynamically provision PersistentVolumes.
 If your cluster is not configured to do so, you will have to manually provision
@@ -23,10 +23,10 @@ oc new-project opensearch-testing
 oc adm policy add-scc-to-user privileged -z default -n opensearch-testing
 
 # Start deployments. Make sure you change the variables/parametes to your need
-oc process -f https://raw.githubusercontent.com/doubektomas/elasticsearch-openshift-testing/opensearch-test/openshift-templates/search-guard-version/elasticsearch-search-kibana-single-node.yaml \
+oc process -f https://raw.githubusercontent.com/doubektomas/elasticsearch-openshift-testing/opensearch-test/openshift-templates/search-guard-version/opensearch-with-dashboards-single-node.yaml \
 -p NAMESPACE="$(oc project -q)" \
--p KIBANA_URL="kibana.example.com" \
--p ELASTICSEARCH_URL="es.example.com" \
+-p DASHBOARDS_URL="dashboards.example.com" \
+-p OPENSEARCH_URL="es.example.com" \
 -p STORAGECLASSNAME="managed-nfs-storage" \
 | oc apply -f -
 
@@ -47,28 +47,28 @@ List of parameters:
   - name: STORAGECLASSNAME
     displayName: Your storage class name (storageClassName) used in your cluster
     value: standard
-    required: true 
-  - name: ELASTICSEARCH_VOLUME_CAPACITY
+    required: true
+  - name: OPENSEARCH_VOLUME_CAPACITY
     displayName: Volume space available for data, e.g. 512Mi, 2Gi.
     value: 10Gi
-    required: true 
-  - name: ELASTICSEARCH_URL
-    displayName: Kibana image to use
-    required: true 
-  - name: KIBANA_URL
-    displayName: Kibana image to use
-    required: true 
-  - name: KIBANA_PORT
-    displayName: Kibana port
-    value: "5601"
     required: true
-  - name: ES_HTTP_PORT
-    displayName: Elasticsearch http port
+  - name: OPENSEARCH_URL
+    displayName: OpenSearch url
+    required: true 
+  - name: OS_HTTP_PORT
+    displayName: OpenSearch http port
     value: "9200"
     required: true
-  - name: ES_TRANSPORT_PORT
-    displayName: Elasticsearch transport port
-    value: "9300"
+  - name: OS_TRANSPORT_PORT
+    displayName: OpenSearch transport port
+    value: "9600"
+    required: true
+  - name: DASHBOARDS_URL
+    displayName: OpenSearch-Dashboards url
+    required: true 
+  - name: DASHBOARDS_PORT
+    displayName: OpenSearch-Dashboards port
+    value: "5601"
     required: true
 ```
 

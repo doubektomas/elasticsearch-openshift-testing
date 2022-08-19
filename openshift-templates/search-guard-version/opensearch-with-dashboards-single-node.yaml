@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: elasticsearch-search-guard-single-node
+  name: opensearch-with-dashboards-single-node
 objects:
 - kind: SecurityContextConstraints
   apiVersion: v1
   metadata:
-    name: elasticsearch-scc
+    name: opensearch-scc
   allowPrivilegedContainer: true
   runAsUser:
     type: RunAsAny
@@ -28,18 +28,18 @@ objects:
     annotations:
       template.alpha.openshift.io/wait-for-ready: "true"
     labels:
-      io.kompose.service: elasticsearch
-    name: elasticsearch
+      io.kompose.service: opensearch
+    name: opensearch
   spec:
     replicas: 1
     selector:
       matchLabels:
-        io.kompose.service: elasticsearch
-    serviceName: elasticsearch
+        io.kompose.service: opensearch
+    serviceName: opensearch
     template:
       metadata:
         labels:
-          io.kompose.service: elasticsearch
+          io.kompose.service: opensearch
       spec:
         initContainers:
         - command:
@@ -68,7 +68,6 @@ objects:
             value: "true"
           - name: discovery.type
             value: single-node
-          #image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
           image: opensearchproject/opensearch:2.2.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
@@ -81,12 +80,12 @@ objects:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 5
-          name: elasticsearch
+          name: opensearch
           ports:
-          - containerPort: ${{ES_HTTP_PORT}}
+          - containerPort: ${{OS_HTTP_PORT}}
             name: http
             protocol: TCP
-          - containerPort: ${{ES_TRANSPORT_PORT}}
+          - containerPort: ${{OS_TRANSPORT_PORT}}
             name: transport
             protocol: TCP
           readinessProbe:
@@ -119,7 +118,7 @@ objects:
         - ReadWriteOnce
         resources:
           requests:
-            storage: ${ELASTICSEARCH_VOLUME_CAPACITY}
+            storage: ${OPENSEARCH_VOLUME_CAPACITY}
         storageClassName: ${STORAGECLASSNAME}
     triggers:
     - type: ConfigChange
@@ -131,24 +130,24 @@ objects:
       kompose.cmd: kompose --provider openshift convert -f docker-compose.yml --emptyvols
       kompose.version: 1.1.0 (36652f6)
     labels:
-      io.kompose.service: kibana
-    name: kibana
+      io.kompose.service: opensearch-dashboards
+    name: opensearch-dashboards
   spec:
     replicas: 1
     selector:
-      io.kompose.service: kibana
+      io.kompose.service: opensearch-dashboards
     strategy:
       resources: {}
       type: Rolling
     template:
       metadata:
         labels:
-          io.kompose.service: kibana
+          io.kompose.service: opensearch-dashboards
       spec:
         containers:
         - env:
           - name: OPENSEARCH_HOSTS
-            value: "https://${ELASTICSEARCH_URL}"
+            value: "https://${OPENSEARCH_URL}"
           - name : DISABLE_SECURITY_DASHBOARDS_PLUGIN
             value: "true"
           image: opensearchproject/opensearch-dashboards:2.2.0
@@ -163,9 +162,9 @@ objects:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 5
-          name: kibana
+          name: opensearch-dashboards
           ports:
-          - containerPort: ${{KIBANA_PORT}}
+          - containerPort: ${{DASHBOARDS_PORT}}
             name: http
             protocol: TCP
           readinessProbe:
@@ -195,18 +194,18 @@ objects:
   metadata:
     annotations:
     labels:
-      io.kompose.service: elasticsearch
-    name: elasticsearch
+      io.kompose.service: opensearch
+    name: opensearch
   spec:
-    host: ${ELASTICSEARCH_URL}
+    host: ${OPENSEARCH_URL}
     port:
-      targetPort: "${ES_HTTP_PORT}"
+      targetPort: "${OS_HTTP_PORT}"
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
     to:
       kind: Service
-      name: elasticsearch
+      name: opensearch
       weight: 100
     wildcardPolicy: None
 - apiVersion: v1
@@ -216,20 +215,20 @@ objects:
       kompose.cmd: kompose --provider openshift convert -f docker-compose.yml --emptyvols
       kompose.version: 1.1.0 (36652f6)
     labels:
-      io.kompose.service: elasticsearch
-    name: elasticsearch
+      io.kompose.service: opensearch
+    name: opensearch
   spec:
     ports:
-    - name: "${ES_HTTP_PORT}"
-      port: ${{ES_HTTP_PORT}}
+    - name: "${OS_HTTP_PORT}"
+      port: ${{OS_HTTP_PORT}}
       protocol: TCP
-      targetPort: ${{ES_HTTP_PORT}}
-    - name: "${ES_TRANSPORT_PORT}"
-      port: ${{ES_TRANSPORT_PORT}}
+      targetPort: ${{OS_HTTP_PORT}}
+    - name: "${OS_TRANSPORT_PORT}"
+      port: ${{OS_TRANSPORT_PORT}}
       protocol: TCP
-      targetPort: ${{ES_TRANSPORT_PORT}}
+      targetPort: ${{OS_TRANSPORT_PORT}}
     selector:
-      io.kompose.service: elasticsearch
+      io.kompose.service: opensearch
     type: ClusterIP
 
 - apiVersion: v1
@@ -239,18 +238,18 @@ objects:
       kompose.cmd: kompose --provider openshift convert -f docker-compose.yml --emptyvols
       kompose.version: 1.1.0 (36652f6)
     labels:
-      io.kompose.service: kibana
-    name: kibana
+      io.kompose.service: opensearch-dashboards
+    name: opensearch-dashboards
   spec:
-    host: ${KIBANA_URL}
+    host: ${DASHBOARDS_URL}
     port:
-      targetPort: "${KIBANA_PORT}"
+      targetPort: "${DASHBOARDS_PORT}"
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
     to:
       kind: Service
-      name: kibana
+      name: opensearch-dashboards
       weight: 100
     wildcardPolicy: None
 
@@ -261,16 +260,16 @@ objects:
       kompose.cmd: kompose --provider openshift convert -f docker-compose.yml --emptyvols
       kompose.version: 1.1.0 (36652f6)
     labels:
-      io.kompose.service: kibana
-    name: kibana
+      io.kompose.service: opensearch-dashboards
+    name: opensearch-dashboards
   spec:
     ports:
-    - name: "${KIBANA_PORT}"
-      port: ${{KIBANA_PORT}}
+    - name: "${DASHBOARDS_PORT}"
+      port: ${{DASHBOARDS_PORT}}
       protocol: TCP
-      targetPort: ${{KIBANA_PORT}}
+      targetPort: ${{DASHBOARDS_PORT}}
     selector:
-      io.kompose.service: kibana
+      io.kompose.service: opensearch-dashboards
     type: ClusterIP
 
 parameters:
@@ -285,25 +284,25 @@ parameters:
     displayName: Your storage class name (storageClassName) used in your cluster
     value: standard
     required: true
-  - name: ELASTICSEARCH_VOLUME_CAPACITY
+  - name: OPENSEARCH_VOLUME_CAPACITY
     displayName: Volume space available for data, e.g. 512Mi, 2Gi.
     value: 10Gi
     required: true
-  - name: ELASTICSEARCH_URL
-    displayName: ElasticSearch url
+  - name: OPENSEARCH_URL
+    displayName: OpenSearch url
     required: true 
-  - name: ES_HTTP_PORT
-    displayName: Elasticsearch http port
+  - name: OS_HTTP_PORT
+    displayName: OpenSearch http port
     value: "9200"
     required: true
-  - name: ES_TRANSPORT_PORT
-    displayName: Elasticsearch transport port
+  - name: OS_TRANSPORT_PORT
+    displayName: OpenSearch transport port
     value: "9600"
     required: true
-  - name: KIBANA_URL
-    displayName: Kibana url
+  - name: DASHBOARDS_URL
+    displayName: OpenSearch-Dashboards url
     required: true 
-  - name: KIBANA_PORT
-    displayName: Kibana port
+  - name: DASHBOARDS_PORT
+    displayName: OpenSearch-Dashboards port
     value: "5601"
     required: true
