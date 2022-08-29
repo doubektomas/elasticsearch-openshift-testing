@@ -1,8 +1,8 @@
 # TODO:
  - [x] Make ports for elastic and kibana as parameters
  - [x] Remove env from elasticsearch pod, it is deprecated, and not needed
- - [ ] Clean up the yaml
- - [ ] Test everything
+ - [x] Clean up the yaml (at least from my view)
+ - [x] Test everything
 
 # OpenSearch Cluster on Openshift
 
